@@ -1,0 +1,16 @@
+{
+  "name": "device-pulse-table",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "dev": "node esbuild.config.js --dev",
+    "watch": "node esbuild.config.js --dev --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
