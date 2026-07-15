@@ -205,6 +205,47 @@ class DevicePulseTableCard extends LitElement {
         this.dispatchEvent(event);
     }
 
+    _parseIpv4Address(value) {
+        const parts = value.trim().split(".");
+
+        if (parts.length !== 4) {
+            return null;
+        }
+
+        const octets = parts.map((part) => {
+            if (! /^\d+$/.test(part)) {
+                return null;
+            }
+
+            const octet = Number(part);
+            return octet >= 0 && octet <= 255 ? octet : null;
+        });
+
+        return octets.includes(null) ? null : octets;
+    }
+
+    _compareSortValues(valueA, valueB) {
+        const valA = String(valueA ?? "").toLowerCase();
+        const valB = String(valueB ?? "").toLowerCase();
+
+        if (this._sortColumn === "host") {
+            const ipA = this._parseIpv4Address(valA);
+            const ipB = this._parseIpv4Address(valB);
+
+            if (ipA && ipB) {
+                for (let index = 0; index < ipA.length; index++) {
+                    if (ipA[index] !== ipB[index]) {
+                        return ipA[index] - ipB[index];
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        return valA.localeCompare(valB);
+    }
+
     _getFilteredAndSortedDevices() {
         let devices = Object.values(this._devices);
 
@@ -223,9 +264,7 @@ class DevicePulseTableCard extends LitElement {
         }
 
         devices.sort((a, b) => {
-            const valA = a[this._sortColumn]?.toLowerCase() || "";
-            const valB = b[this._sortColumn]?.toLowerCase() || "";
-            const cmp = valA.localeCompare(valB);
+            const cmp = this._compareSortValues(a[this._sortColumn], b[this._sortColumn]);
             return this._sortDirection === "asc" ? cmp : -cmp;
         });
 
