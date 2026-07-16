@@ -132,7 +132,7 @@ class DevicePulseTableCard extends LitElement {
                 this._valueChangedCells.set(device_id, new Set());
             }
 
-            if (["ping_status", "pings_failed_count", "last_response_time"].includes(state.attributes.tag)) {
+            if (["ping_status", "pings_failed_count", "total_failed_pings_count", "last_response_time"].includes(state.attributes.tag)) {
                 let property = state.attributes.tag;
 
                 this._devices = {
@@ -142,7 +142,8 @@ class DevicePulseTableCard extends LitElement {
                         [property]: {
                             ...this._devices[device_id][property],
                             state: state.state,
-                            ...(property === "ping_status" ? { pings_failed: state.attributes.pings_failed } : {})
+                            ...(property === "ping_status" ? { pings_failed: state.attributes.pings_failed } : {}),
+                            ...(property === "total_failed_pings_count" ? { count_started_at: state.attributes.count_started_at } : {})
                         },
                         ...(property === "ping_status" ? { ping_status_since_timestamp: state.attributes.state_since } : {})
                     }
@@ -308,6 +309,7 @@ class DevicePulseTableCard extends LitElement {
             ping_status: " ",
             ping_status_since_timestamp: "Since",
             pings_failed_count: "Pings Failed",
+            total_failed_pings_count: "Total Failed Pings",
             last_response_time: "Last Response Time",
         };
         return labels[column] || column;
@@ -358,11 +360,27 @@ class DevicePulseTableCard extends LitElement {
 
             return html`${parts.join(' ')}`;
         }
+        if (column === "total_failed_pings_count") {
+            if (! device[column]) {
+                return html`<span class="not-available" title="Not Available">n.a.</span>`;
+            }
+
+            const countStartedAt = device[column].count_started_at;
+
+            return html`
+                <div class="clickable total-failed-pings-count" @click=${() => this._openEntityDialog(device[column].entity_id)}>
+                    <span class="total-failed-pings-count-number animate-change">
+                        ${device[column].state && ! (["unknown", "unavailable"].includes(device[column].state)) ? device[column].state : '-'}
+                    </span>
+                    ${countStartedAt ? html`<span class="total-failed-pings-count-started">Since: ${new Date(countStartedAt).toLocaleString()}</span>` : ""}
+                </div>
+            `;
+        }
 
         if (["pings_failed_count", "last_response_time"].includes(column)) {
             return ! device[column] ?
                 html`<span class="not-available" title="Not Available">n.a.</span>` :
-                html`<span class="clickable" @click=${() => this._openEntityDialog(device[column].entity_id)}>
+                html`<span class="clickable animate-change" @click=${() => this._openEntityDialog(device[column].entity_id)}>
                     ${device[column].state && ! (["unknown", "0"].includes(device[column].state)) ? device[column].state : '-'} 
                     ${device[column].state && device[column].state !== "unknown" ? device[column].unit_of_measurement : ''}
                 </span>
@@ -397,6 +415,7 @@ class DevicePulseTableCard extends LitElement {
             "ping_status_since_timestamp",
             "last_response_time",
             "pings_failed_count",
+            "total_failed_pings_count",
             "integration_name",
         ]
         .filter((col) => this._shouldShowColumn(col));
@@ -568,6 +587,7 @@ class DevicePulseTableCardEditor extends LitElement {
                         { value: "integration_name", label: "Integration Name" },
                         { value: "last_response_time", label: "Last Response Time" },
                         { value: "pings_failed_count", label: "Pings Failed" },
+                        { value: "total_failed_pings_count", label: "Total Failed Pings" },
                         { value: "ping_status_since_timestamp", label: "Connected/Disconnected Since" },
                     ],
                 },

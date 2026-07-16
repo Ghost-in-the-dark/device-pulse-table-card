@@ -137,6 +137,14 @@ export const cardStyles = css`
         font-size: 13px;
         color: #777;
     }
+    .total-failed-pings-count-number {
+        color: var(--primary-text-color);
+    }
+    .total-failed-pings-count-started {
+        color: var(--secondary-text-color);
+        font-size: 12px;
+        display: block;
+    }
     @keyframes valueChangedAnimation {
         0% {
             transform: scale(1.2);
@@ -147,7 +155,7 @@ export const cardStyles = css`
             font-weight: normal;
         }
     }
-    td.value-changed span {
+    td.value-changed span.animate-change {
         animation: valueChangedAnimation 2s ease-out;
         display: inline-block;
     }
