@@ -2,17 +2,9 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
-If you want to make donation as appreciation of my work, you can do so via buy me a coffee. Thank you!
+If you want to make a donation in appreciation of my work, you can do so via Buy Me a Coffee. Thank you!
 
 <a href="https://buymeacoffee.com/studiobts" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png"></a>
-
-
-## README in Progress
-
-This README file is currently a work in progress.
-Some sections may be incomplete or subject to change.
-
----
 
 ## Introduction
 
@@ -49,18 +41,16 @@ The card supports visual configuration via the Lovelace UI editor.
 
 ## Installation
 
-<!--
 ### HACS (Recommended)
 
-1. Add the custom repository `REPO` to HACS.
+1. Add `https://github.com/studiobts/device-pulse-table-card` as a custom dashboard/plugin repository in HACS.
 2. Search for **Device Pulse Table Card** and install it.
 3. Add the card to your Lovelace dashboard.
--->
 
 ### Manual Installation
 
-1. Download the latest release from [https://github.com/studiobts/device-pulse-table-card/releases](https://github.com/studiobts/device-pulse-table-card/releases).
-2. Copy the `device-pulse-table-card.js` and `device-pulse-table-card.css` file to `www/device-pulse-table-card` folder.
+1. Download `device-pulse-table-card.js` from the latest release: [https://github.com/studiobts/device-pulse-table-card/releases](https://github.com/studiobts/device-pulse-table-card/releases).
+2. Copy `device-pulse-table-card.js` to the `/config/www/device-pulse-table-card` folder.
 3. Add the following resource in your Lovelace configuration:
 
 ```yaml
@@ -72,4 +62,3 @@ type: module
 
 - The card requires active Device Pulse integration.
 - The card supports automatic updates through the Home Assistant WebSocket connection.
-
