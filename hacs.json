@@ -1,3 +1,5 @@
 {
-  "name": "Device Pulse Table Card"
+  "name": "Device Pulse Table Card",
+  "filename": "device-pulse-table-card.js",
+  "hide_default_branch": true
 }

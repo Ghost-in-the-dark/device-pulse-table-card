@@ -20,11 +20,14 @@ function ensureOutDir() {
     }
 }
 
-function copyCSS() {
-    const srcPath = path.join(srcDir, `${file}-style.js`);
-    const destPath = path.join(outDir, `${file}-style.js`);
-    fs.copyFileSync(srcPath, destPath);
-    console.log(`CSS copied in ${destPath}`);
+function cleanGeneratedFiles() {
+    [
+        `${file}.js`,
+        `${file}.js.map`,
+        `${file}-style.js`,
+    ].forEach((generatedFile) => {
+        fs.rmSync(path.join(outDir, generatedFile), { force: true });
+    });
 }
 
 async function build() {
@@ -34,17 +37,20 @@ async function build() {
     console.log("Src File", path.join(srcDir, `${file}.js`));
     console.log("Output Dir:", outDir);
 
+    cleanGeneratedFiles();
+
     const context = await esbuild.context({
         entryPoints: [path.join(srcDir, `${file}.js`)],
-        bundle: false,
+        bundle: true,
+        format: "esm",
+        platform: "browser",
+        external: ["https://*"],
         minify: ! dev,
         sourcemap: dev,
         outfile: path.join(outDir, `${file}.js`),
     });
 
     await context.rebuild();
-
-    copyCSS();
 
     if (watch) {
         await context.watch();
